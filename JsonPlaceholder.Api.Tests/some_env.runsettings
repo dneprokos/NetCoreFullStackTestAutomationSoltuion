@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- File name extension must be .runsettings -->
+<RunSettings>
+  <RunConfiguration>
+    <ResultsDirectory>.\Results</ResultsDirectory>
+    <DisableParallelization>false</DisableParallelization>
+  </RunConfiguration>
+
+  <TestRunParameters>
+    <!--General settings-->
+    <Parameter name="isDebug" value="true"/>
+    <!--Rest Api settings-->
+    <Parameter name="restApiBaseUrl" value="https://jsonplaceholder.typicode.com" />
+	  <Parameter name="restApiVersion" value="v1"/>
+  </TestRunParameters>
+
+</RunSettings>
