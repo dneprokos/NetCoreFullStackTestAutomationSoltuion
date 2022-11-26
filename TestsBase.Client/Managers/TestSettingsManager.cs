@@ -56,6 +56,14 @@ namespace TestsBase.Client.Managers
                 return isParsed ? result : 30;
             }
         }
+        public static string WindowSize
+        {
+            get
+            {
+                var windowSize = TestContext.Parameters["windowSize"];
+                return windowSize ?? "full";
+            }
+        }
 
         //<-------------------Web Application configs------------------------------------>
         public static string BaseUrl => TestContext.Parameters["baseUrl"];

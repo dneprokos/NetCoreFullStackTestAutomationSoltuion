@@ -10,23 +10,14 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
+using TestsBase.Client.Managers;
 
 namespace SeleniumBase.Client.WebDriverBase
 {
     public class WebDriverFactory
     {
-        #region Private members
-
-        private static readonly ConcurrentDictionary<IWebDriver, string> WebDriversCollection
-            = new ConcurrentDictionary<IWebDriver, string>();
-
-        private static readonly object CollectionLocker = new object();
-
-        private static readonly List<int> RunningChromeProcesses = Process.GetProcessesByName("chrome")
-            .Select(process => process.Id)
-            .ToList();
-
-        #endregion
+        #region Public members
 
         public static IWebDriver DriverContext
         {
@@ -42,25 +33,34 @@ namespace SeleniumBase.Client.WebDriverBase
             switch (driverOptions.Browser)
             {
                 case nameof(SupportedBrowsers.Chrome):
-                {
-                    ChromeDriverService driverService
-                        = ChromeDriverService.CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
-                    var options = new ChromeOptions();
-                    options.AddArgument("window-size=1920, 1080"); //TODO: Read it from configuration
-                    options.AddArgument("no-sandbox");
+                    {
+                        ChromeDriverService driverService
+                            = ChromeDriverService.CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
+                        var options = new ChromeOptions();
+                        options.AddArgument("no-sandbox");
 
-                    DriverContext = new ChromeDriver(driverService, options);
+                        //Is Headless mode
+                        if (driverOptions.IsHeadless)
+                            options.AddArgument("headless");
 
-                    break;
-                }
+                        //Set window size
+                        string windowsSize = TestSettingsManager.WindowSize;
+                        string windowsSizeValue = windowsSize.ToLowerInvariant() == "full"
+                            ? "start-maximized"
+                            : driverOptions.WindowSize;
+                        options.AddArgument(windowsSizeValue);
+
+                        //Is Remote or local WebDriver
+                        DriverContext = driverOptions.IsRemote ?
+                            (IWebDriver)new RemoteWebDriver(driverOptions.SeleniumHubUri, options)
+                            : new ChromeDriver(driverService, options);
+
+                        break;
+                    }
             }
 
             return DriverContext;
         }
-
-        #region Public methods
-
-
 
         public void StartDriver(WebDriverCapabilities driverOptions)
         {
@@ -154,6 +154,19 @@ namespace SeleniumBase.Client.WebDriverBase
                 }
             }
         }
+
+        #endregion
+
+        #region Private members
+
+        private static readonly ConcurrentDictionary<IWebDriver, string> WebDriversCollection
+            = new ConcurrentDictionary<IWebDriver, string>();
+
+        private static readonly object CollectionLocker = new object();
+
+        private static readonly List<int> RunningChromeProcesses = Process.GetProcessesByName("chrome")
+            .Select(process => process.Id)
+            .ToList();
 
         #endregion
     }
