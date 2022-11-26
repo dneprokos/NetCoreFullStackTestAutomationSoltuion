@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- File name extension must be .runsettings -->
+<RunSettings>
+  <RunConfiguration>
+    <ResultsDirectory>.\Results</ResultsDirectory>
+    <DisableParallelization>false</DisableParallelization>
+  </RunConfiguration>
+
+  <TestRunParameters>
+    <!--General settings-->
+    <Parameter name="isDebug" value="true"/>
+    <!-- WebDriver configuration -->
+    <Parameter name="browser" value="Chrome" />
+    <Parameter name="waitTimeOut" value="60" />
+    <Parameter name="isHeadless" value="false" />
+    <Parameter name="isRemote" value="false" />
+    <Parameter name="seleniumHubUrl" value="http://localhost:4444/wd/hub/" />
+    <!-- Application data configuration -->
+    <Parameter name="baseUrl" value="https://www.skyscrapercenter.com" />
+  </TestRunParameters>
+
+</RunSettings>

@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using TestsBase.Client.Managers;
+﻿using NUnit.Framework;
+using TestsBase.Client.Utils;
 
 namespace JsonPlaceholder.Api.Tests.ApiTests
 {
@@ -10,8 +9,7 @@ namespace JsonPlaceholder.Api.Tests.ApiTests
         [OneTimeSetUp]
         public void CommonTestsSetup()
         {
-            TestSettingsManager.RestApiUrl.Should().NotBeNullOrEmpty("restApiBaseUrl is required to run the tests");
-            TestSettingsManager.RestApiVersion.Should().NotBeNullOrEmpty("restApiVersion is required to run the tests");
+            ConfigurationHelper.VerifySettingsRequiredForRestApiTests();
         }
     }
 }
