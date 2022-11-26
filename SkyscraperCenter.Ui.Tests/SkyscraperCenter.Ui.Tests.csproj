@@ -10,6 +10,13 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SeleniumBaseClient\SeleniumBase.Client.csproj" />
+    <ProjectReference Include="..\SkyscraperCenter.Ui.Client\SkyscraperCenter.Ui.Client.csproj" />
+    <ProjectReference Include="..\TestsBase.Client\TestsBase.Client.csproj" />
   </ItemGroup>
 
 </Project>
