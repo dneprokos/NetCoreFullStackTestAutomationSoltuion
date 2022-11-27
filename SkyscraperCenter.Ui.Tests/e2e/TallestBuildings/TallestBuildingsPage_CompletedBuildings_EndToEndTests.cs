@@ -50,7 +50,7 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
                 .PageObjects
                 .BuildingsPage
                 .BuildingsTable
-                .GetStaticTableRecords();
+                .GetTableWithStaticColumns();
 
             //Act
             BuildingsTableComponentModel searchBuilding = table.FirstOrDefault(r => r.NAME == buildingName);
@@ -60,8 +60,10 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
             searchBuilding!.FLOORS.Should().Be(expectedFloors);
         }
 
-        [Test]
-        public void TallestBuildingsTable_TallestCompleted_VerifyBuildingWithMaximumNumberOfFloors()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void TallestBuildingsTable_TallestCompleted_VerifyBuildingWithMaximumNumberOfFloors(int approach)
         {
             //Arrange
             const int expectedFlours = 163;
@@ -70,20 +72,37 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
                 .PageObjects
                 .BuildingsPage
                 .BuildingsTable
-                .GetStaticTableRecords();
+                .GetTableWithStaticColumns();
 
             //Act
-            BuildingsTableComponentModel buildingWithMaxFloors = table
-                .Aggregate((max, next) 
-                    => next.FLOORS > max.FLOORS ? next : max);
+            BuildingsTableComponentModel buildingWithMaxFloors = null;
+            //NOTE: This one was only created for only to show a LINQ examples. Please use only one approach in the real world!
+            switch (approach)
+            {
+                case 1:
+                    buildingWithMaxFloors = table
+                        .Aggregate((max, next)
+                            => next.FLOORS > max.FLOORS ? next : max);
+                    break;
+                case 2:
+                    buildingWithMaxFloors = table.OrderByDescending(data => data.FLOORS).First();
+                    break;
+                case 3:
+                    // ReSharper disable once PossibleInvalidOperationException
+                    int maxValue = (int)table.Max(data => data.FLOORS);
+                    buildingWithMaxFloors = table.First(data => data.FLOORS == maxValue);
+                    break;
+                default:
+                    Assert.Fail("No such approach available. Please make sure you have specified correct approach parameter");
+                    break;
+            }
 
             //Assert
             using (new AssertionScope())
             {
-                buildingWithMaxFloors.NAME.Should().Be(expectedName);
+                buildingWithMaxFloors!.NAME.Should().Be(expectedName);
                 buildingWithMaxFloors.FLOORS.Should().Be(expectedFlours);
             }
         }
-
     }
 }
