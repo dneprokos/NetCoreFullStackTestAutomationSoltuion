@@ -56,6 +56,7 @@ Rest API and Selenium 4 projects on .CORE 3.1
 - On Windows OS --> Find powershell script in the root of the any test projects "GenerateAllureResultsAndOpenInDockerContainer.ps1"
 - Run this script in powershell
 
+![image](https://user-images.githubusercontent.com/8307892/204125271-e2926a2a-c620-4d08-933a-ca90a2388c15.png)
 
 
 Note: Results will be opened in Docker attached mode. It means, container will be stopped once you close PowerShell window. 
