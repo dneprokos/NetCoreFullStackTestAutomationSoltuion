@@ -1,0 +1,8 @@
+﻿version: "3"
+services:
+  reports:
+    container_name: rest-api-allure-reports
+    build: .
+    image: dneprokos/rest-api-allure-reports
+    ports:               
+      - "9999:9999"
