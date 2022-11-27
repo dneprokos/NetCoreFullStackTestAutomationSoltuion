@@ -1,34 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenQA.Selenium;
-using SkyscraperCenter.Ui.Client.PageObject.PageLocators.BuildingPage;
+using SeleniumBase.Client.Utils.ComponentBasics;
+using SkyscraperCenter.Ui.Client.PageObject.PageLocators.BuildingPage.Components;
 
 namespace SkyscraperCenter.Ui.Client.PageObject.Pages.BuildingPage.PageComponents
 {
-    public class BuildingsTableComponent
+    public class BuildingsPageTable : TableBasics
     {
-        private readonly BuildingsPageLocators _locators;
+        private readonly BuildingsPageTableLocators _locators;
 
-        public BuildingsTableComponent(BuildingsPageLocators locators)
+        public BuildingsPageTable()
         {
-            _locators = locators;
+            _locators = new BuildingsPageTableLocators();
         }
 
-        public List<string> GetHeaderNames()
-        {
-            return _locators.Headers.Select(h => h.Text.Trim()).ToList();
-        }
-
+        /// <summary>
+        /// Returns table rows count
+        /// </summary>
+        /// <returns></returns>
         public int GetRecordsCount()
         {
             return _locators.RowElements.Count;
         }
 
         /// <summary>
-        /// Gets table row values for Table with static columns
+        /// Gets table with static predefined columns 
         /// </summary>
         /// <returns></returns>
-        public List<BuildingsTableComponentModel> GetStaticTableRecords()
+        public List<BuildingsTableComponentModel> GetTableWithStaticColumns()
         {
             var tableRecords = new List<BuildingsTableComponentModel>();
             List<IWebElement> rows = _locators.RowElements;
@@ -79,12 +80,10 @@ namespace SkyscraperCenter.Ui.Client.PageObject.Pages.BuildingPage.PageComponent
             return tableRecords;
         }
 
-        //TODO: Create Table with dynamic columns
-
-        public IList<IWebElement> GetRowCells(IWebElement row)
+        [Obsolete("Not all results are displayed correctly. Still need to work on it. Please use static table.")]
+        public List<BuildingsTableComponentModelAllStringTypes> GetTableWithDynamicColumns()
         {
-            var cellsPerRow = row.FindElements(By.TagName("td"));
-            return cellsPerRow;
+            return GetMappedTableRows<BuildingsTableComponentModelAllStringTypes>(_locators.Headers, _locators.RowElements);
         }
     }
 }

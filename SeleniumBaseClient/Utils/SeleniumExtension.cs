@@ -129,5 +129,47 @@ namespace SeleniumBase.Client.Utils
                 throw;
             }
         }
+
+        public static IWebElement WaitForElement(this IWebElement element, By locator,
+            int secondsTimeOut)
+        {
+            if (secondsTimeOut <= 0)
+                return element.FindElement(locator);
+
+            var wait = new WebDriverWait(
+                WebDriverFactory.DriverContext,
+                TimeSpan.FromSeconds(secondsTimeOut));
+
+            try
+            {
+                return wait.Until(dr => element.FindElement(locator));
+            }
+            catch (WebDriverTimeoutException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
+            }
+        }
+
+        public static IReadOnlyCollection<IWebElement> WaitForElements(this IWebElement element, By locator,
+            int secondsTimeOut)
+        {
+            if (secondsTimeOut <= 0)
+                return element.FindElements(locator);
+
+            var wait = new WebDriverWait(
+                WebDriverFactory.DriverContext,
+                TimeSpan.FromSeconds(secondsTimeOut));
+
+            try
+            {
+                return wait.Until(dr => element.FindElements(locator));
+            }
+            catch (WebDriverTimeoutException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
+            }
+        }
     }
 }

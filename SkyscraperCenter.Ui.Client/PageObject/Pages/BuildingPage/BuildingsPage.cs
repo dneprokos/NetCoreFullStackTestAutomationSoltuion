@@ -7,14 +7,14 @@ namespace SkyscraperCenter.Ui.Client.PageObject.Pages.BuildingPage
 {
     public class BuildingsPage
     {
-        public BuildingsTableComponent BuildingsTable;
+        public BuildingsPageTable BuildingsTable;
 
         private readonly BuildingsPageLocators _locators;
 
         public BuildingsPage()
         {
             _locators = new BuildingsPageLocators();
-            BuildingsTable = new BuildingsTableComponent(_locators);
+            BuildingsTable = new BuildingsPageTable();
         }
 
         public BuildingsPage SelectFilterDropDownByText(string text, bool verifyIfApplied = false)
