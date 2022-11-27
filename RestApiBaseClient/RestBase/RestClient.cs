@@ -175,6 +175,23 @@ namespace RestApiBase.Client.RestBase
             return ConvertHttpResponseToRestResponseOfT(responseMessage, requestBody, ignoreBodyResponse).Result;
         }
 
+        /// <summary>
+        /// Sends PATCH REST Api request and return status code with expected object type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="requestUrl"></param>
+        /// <param name="requestBody"></param>
+        /// <param name="ignoreBodyResponse"></param>
+        /// <returns></returns>
+        public async Task<RestResponse<T>> SendPatchRequest<T>(string requestUrl, T requestBody, bool ignoreBodyResponse = false)
+        {
+            var (content, json) = ConvertBodyToStringContent(requestBody);
+            PrintRequestIfIsDebugMode("PATCH", requestUrl, json);
+            HttpResponseMessage responseMessage = await _client.PatchAsync(requestUrl, content);
+
+            return ConvertHttpResponseToRestResponseOfT(responseMessage, requestBody, ignoreBodyResponse).Result;
+        }
+
         public async Task<RestResponse<TM>> SendPutRequest<T, TM>(string requestUrl, T requestBody, bool ignoreBodyResponse = false)
         {
             var (content, json) = ConvertBodyToStringContent(requestBody);

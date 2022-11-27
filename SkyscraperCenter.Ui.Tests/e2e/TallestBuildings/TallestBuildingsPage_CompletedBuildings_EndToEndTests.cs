@@ -5,6 +5,7 @@ using FluentAssertions.Execution;
 using NUnit.Allure.Attributes;
 using NUnit.Framework;
 using SkyscraperCenter.Ui.Client.Constants;
+using SkyscraperCenter.Ui.Client.Enums;
 using SkyscraperCenter.Ui.Client.Facades;
 using SkyscraperCenter.Ui.Client.PageObject.Pages.BuildingPage.PageComponents;
 using SkyscraperCenter.Ui.Tests.e2e._TestsBase;
@@ -22,8 +23,9 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
         {
             //NOTE: hadcoded string was specified only for testing purposes. Page Url constant exist
             SkyscraperCenterBase.QuickNavigation.GoToPage(PageUrls.TallestBuildingsWithFilterUnderConstructionPageUrl); 
-            SkyscraperCenterBase.PageObjects.BuildingsPage.SelectFilterDropDownByText(
-                "100 Tallest Completed Buildings in the World", true);
+            SkyscraperCenterBase.Pages.BuildingsPage
+                .SelectFilterDropDownByText(
+                    BuildingsFilterOptions.HundredTallestCompletedBuildingsInTheWorld, true);
         }
 
         [TestCase(100)]
@@ -33,7 +35,7 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
 
             //Act
             int actualRecordsCount = SkyscraperCenterBase
-                .PageObjects
+                .Pages
                 .BuildingsPage
                 .BuildingsTable
                 .GetRecordsCount();
@@ -47,7 +49,7 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
         {
             //Arrange
             List<BuildingsTableComponentModel> table = SkyscraperCenterBase
-                .PageObjects
+                .Pages
                 .BuildingsPage
                 .BuildingsTable
                 .GetTableWithStaticColumns();
@@ -69,7 +71,7 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
             const int expectedFlours = 163;
             const string expectedName = "Burj Khalifa";
             List<BuildingsTableComponentModel> table = SkyscraperCenterBase
-                .PageObjects
+                .Pages
                 .BuildingsPage
                 .BuildingsTable
                 .GetTableWithStaticColumns();
