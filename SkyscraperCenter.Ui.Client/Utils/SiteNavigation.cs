@@ -8,7 +8,5 @@ namespace SkyscraperCenter.Ui.Client.Utils
         {
             WebDriverFactory.DriverContext.Navigate().GoToUrl(url);
         }
-
-
     }
 }

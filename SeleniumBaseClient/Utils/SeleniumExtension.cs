@@ -171,5 +171,10 @@ namespace SeleniumBase.Client.Utils
                 throw;
             }
         }
+
+        public static void OpenNewTabOrWindow(this IWebDriver driver, WindowType windowType)
+        {
+            driver.SwitchTo().NewWindow(windowType); //NOTE: New feature
+        }
     }
 }

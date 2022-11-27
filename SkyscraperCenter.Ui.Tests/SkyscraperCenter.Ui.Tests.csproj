@@ -20,8 +20,4 @@
     <ProjectReference Include="..\TestsBase.Client\TestsBase.Client.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="e2e\SeleniumFourNewFeatures\" />
-  </ItemGroup>
-
 </Project>

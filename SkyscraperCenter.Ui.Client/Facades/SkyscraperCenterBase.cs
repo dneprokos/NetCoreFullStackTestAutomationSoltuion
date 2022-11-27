@@ -5,6 +5,6 @@ namespace SkyscraperCenter.Ui.Client.Facades
     public class SkyscraperCenterBase
     {
         public static SiteNavigation QuickNavigation => new SiteNavigation();
-        public static PageObjects PageObjects => new PageObjects();
+        public static PageObjects Pages => new PageObjects();
     }
 }
