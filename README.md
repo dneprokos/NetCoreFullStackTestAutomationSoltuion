@@ -44,9 +44,27 @@ Rest API and Selenium 4 projects on .CORE 3.1
 
 ![image](https://user-images.githubusercontent.com/8307892/204018354-164c1158-a3c3-4738-8326-5c4e515b0cbf.png)
 
-##How to generate Allure report
+## How to generate Allure report
 
-<To be updated>
+### Prerequisites
+
+- Report generation requires local Docker installation https://docs.docker.com/get-docker/
+- Test it typing "docker --version" to command line
+
+### How to run
+
+- On Windows OS --> Find powershell script in the root of the any test projects "GenerateAllureResultsAndOpenInDockerContainer.ps1"
+- Run this script in powershell
+
+
+
+Note: Results will be opened in Docker attached mode. It means, container will be stopped once you close PowerShell window. 
+In order to run it in dettach mode, please open Powershell and change last line "docker-compose up" to "docker-compose up -d"
+
+
+
+
+
 
 
 
