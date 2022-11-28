@@ -1,4 +1,5 @@
-﻿namespace SeleniumBase.Client.WebDriverBase
+﻿
+namespace SeleniumBase.Client.WebDriverBase
 {
     public enum SupportedBrowsers
     {
