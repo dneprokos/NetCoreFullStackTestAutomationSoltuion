@@ -10,6 +10,7 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 using TestsBase.Client.Managers;
 
@@ -17,7 +18,22 @@ namespace SeleniumBase.Client.WebDriverBase
 {
     public class WebDriverFactory
     {
-        #region Public members
+        private const string ChromeProcessName = "chrome";
+        private const string FireFoxProcessName = "firefox";
+        private const string GeckoDriverProcessName = "geckodriver";
+
+        private static readonly ConcurrentDictionary<IWebDriver, string> WebDriversCollection
+            = new ConcurrentDictionary<IWebDriver, string>();
+
+        private static readonly object CollectionLocker = new object();
+
+        private static readonly List<int> RunningChromeProcesses = Process.GetProcessesByName(ChromeProcessName)
+            .Select(process => process.Id)
+            .ToList();
+
+        private static readonly List<int> RunningFireFoxProcesses = Process.GetProcessesByName(FireFoxProcessName)
+            .Select(process => process.Id)
+            .ToList();
 
         public static IWebDriver DriverContext
         {
@@ -30,33 +46,56 @@ namespace SeleniumBase.Client.WebDriverBase
 
         private IWebDriver InstantiateWebDriver(WebDriverCapabilities driverOptions)
         {
-            switch (driverOptions.Browser)
+            switch (driverOptions.Browser.ToLowerInvariant())
             {
-                case nameof(SupportedBrowsers.Chrome):
-                    {
-                        ChromeDriverService driverService
-                            = ChromeDriverService.CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
-                        var options = new ChromeOptions();
-                        options.AddArgument("no-sandbox");
+                case "chrome":
+                {
+                    ChromeDriverService driverService
+                        = ChromeDriverService.CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
+                    var options = new ChromeOptions();
+                    options.AddArgument("no-sandbox");
 
-                        //Is Headless mode
-                        if (driverOptions.IsHeadless)
-                            options.AddArgument("headless");
+                    //Is Headless mode
+                    if (driverOptions.IsHeadless)
+                        options.AddArgument("headless");
+
+                    //Set window size
+                    string windowsSize = TestSettingsManager.WindowSize;
+                    string windowsSizeValue = windowsSize.ToLowerInvariant() == "full"
+                        ? "start-maximized"
+                        : driverOptions.WindowSize;
+                    options.AddArgument(windowsSizeValue);
+
+                    //Is Remote or local WebDriver
+                    DriverContext = driverOptions.IsRemote ?
+                        (IWebDriver)new RemoteWebDriver(driverOptions.SeleniumHubUri, options)
+                        : new ChromeDriver(driverService, options);
+
+                    break;
+                }
+                case "firefox":
+                {
+                    FirefoxDriverService driverService = FirefoxDriverService.CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
+                    var options = new FirefoxOptions();
+
+                    //Is Headless mode
+                    if (driverOptions.IsHeadless)
+                        options.AddArgument("headless");
 
                         //Set window size
                         string windowsSize = TestSettingsManager.WindowSize;
                         string windowsSizeValue = windowsSize.ToLowerInvariant() == "full"
-                            ? "start-maximized"
+                            ? "--start-maximized"
                             : driverOptions.WindowSize;
                         options.AddArgument(windowsSizeValue);
 
                         //Is Remote or local WebDriver
                         DriverContext = driverOptions.IsRemote ?
-                            (IWebDriver)new RemoteWebDriver(driverOptions.SeleniumHubUri, options)
-                            : new ChromeDriver(driverService, options);
+                        (IWebDriver)new RemoteWebDriver(driverOptions.SeleniumHubUri, options)
+                        : new FirefoxDriver(driverService, options);
 
-                        break;
-                    }
+                    break;
+                }
             }
 
             return DriverContext;
@@ -102,7 +141,7 @@ namespace SeleniumBase.Client.WebDriverBase
                 .TryUpdate(currentWebDriver, string.Empty, TestContext.CurrentContext.Test.ID);
         }
 
-        public void QuitAndKillChromeProcesses()
+        public void QuitAndKillBrowserProcesses()
         {
             var timer = new Stopwatch();
             timer.Start();
@@ -115,11 +154,29 @@ namespace SeleniumBase.Client.WebDriverBase
             WebDriversCollection.ToList().ForEach(pair => pair.Key.Quit());
             WebDriversCollection.Clear();
 
-            List<int> chromeProcessesIds = Process.GetProcessesByName("chrome")
-                .Select(process => process.Id)
-                .ToList();
+            var processIds = new List<int>();
 
-            List<int> processIds = chromeProcessesIds.Except(RunningChromeProcesses).ToList();
+            switch (TestSettingsManager.Browser.ToLowerInvariant())
+            {
+                case "chrome":
+                    List<int> chromeProcessesIds = Process.GetProcessesByName(ChromeProcessName)
+                        .Select(process => process.Id)
+                        .ToList();
+                    processIds = chromeProcessesIds.Except(RunningChromeProcesses).ToList();
+                    break;
+                case "firefox":
+                    List<int> fireFoxProcessesIds = Process.GetProcessesByName(FireFoxProcessName)
+                        .Select(process => process.Id)
+                        .ToList();
+
+                    List<int> geckoDriverProcesses = Process.GetProcessesByName(GeckoDriverProcessName)
+                        .Select(process => process.Id)
+                        .ToList();
+                    processIds.AddRange(geckoDriverProcesses);
+
+                    processIds = fireFoxProcessesIds.Except(RunningFireFoxProcesses).ToList(); ;
+                    break;
+            }
 
             processIds.ForEach(processId =>
             {
@@ -154,20 +211,5 @@ namespace SeleniumBase.Client.WebDriverBase
                 }
             }
         }
-
-        #endregion
-
-        #region Private members
-
-        private static readonly ConcurrentDictionary<IWebDriver, string> WebDriversCollection
-            = new ConcurrentDictionary<IWebDriver, string>();
-
-        private static readonly object CollectionLocker = new object();
-
-        private static readonly List<int> RunningChromeProcesses = Process.GetProcessesByName("chrome")
-            .Select(process => process.Id)
-            .ToList();
-
-        #endregion
     }
 }

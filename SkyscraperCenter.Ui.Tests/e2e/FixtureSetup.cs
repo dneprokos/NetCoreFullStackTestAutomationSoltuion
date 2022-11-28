@@ -16,7 +16,7 @@ namespace SkyscraperCenter.Ui.Tests.e2e
         [OneTimeTearDown]
         public void AfterAllTests()
         {
-            SeleniumFramework.WebDriverFactory.QuitAndKillChromeProcesses();
+            SeleniumFramework.WebDriverFactory.QuitAndKillBrowserProcesses();
         }
     }
 }
