@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Flurl;
 using JsonPlaceholder.Api.Client.ApiModels;
@@ -15,7 +16,22 @@ namespace JsonPlaceholder.Api.Client.RequestBuilders.PostBuilders
         {
             Model = new PostApiModelV1();
             SearchUrl = Endpoints.Posts();
+            RestClient.RestRequestSent += RestClient_RestRequestSent;
+            RestClient.RestRequestSentWithArgs += RestClient_RestRequestSentWithArgs;
         }
+
+        private void RestClient_RestRequestSent(object src, EventArgs eventArgs)
+        {
+            Console.WriteLine("###POSTs REST API request was sent and received. Processing results...\n");
+        }
+
+        private void RestClient_RestRequestSentWithArgs(object src, RequestSentArgs eventArgs)
+        {
+            Console.WriteLine($"###POSTs REST API request with a method {eventArgs.Method} was sent and received. Processing results...\n");
+        }
+
+        //Event subscriber
+        
 
         #region Body builder
 

@@ -1,4 +1,7 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using JsonPlaceholder.Api.Client.ApiModels;
 using JsonPlaceholder.Api.Client.Constants;
@@ -18,6 +21,22 @@ namespace JsonPlaceholder.Api.Tests.ApiTests.Posts
     [AllureSubSuite("POST /posts")]
     public class CreatePostsApiTests : RestApiTestBase
     {
+        [Test]
+        [Parallelizable]
+        public void Test()
+        {
+            int y = 0;
+            int k;
+
+            for (k = 5; k>=10; k--)
+            {
+                y += k;
+            }
+
+            Console.WriteLine(y);
+            Console.WriteLine(k);
+        }
+
         [Test]
         [Parallelizable]
         public void CreatePost_WithAllProperties_ShouldBeCreated()
@@ -78,5 +97,49 @@ namespace JsonPlaceholder.Api.Tests.ApiTests.Posts
             //Assert
             postResponse.ShouldHaveBadRequestStatusCodeWithExpectedMessage(PostConstants.TitleMoreThanMaxValidationMessage);
         }
+
+        [Test]
+        [Parallelizable]
+        public void DelefateAndEventTestExample()
+        {
+            //Delegate - Contract / Agreement between publisher and subscriber
+            //Determines signature of the event Handler method in Subscriber
+
+        }
+
+        [Test]
+        [Parallelizable]
+        public void Temp()
+        {
+
+            var movies = new List<Movie>()
+            {
+                new Movie { Name = "Avatar 2", ReleaseYear = 2023 },
+                new Movie { Name = "Terminator", ReleaseYear = 1984 },
+                new Movie { Name = "Terminator 2", ReleaseYear = 1991 },
+                new Movie { Name = "Ant-Man and the Wasp: Quantumania", ReleaseYear = 2023 },
+            };
+
+
+            var skippedMovies = movies
+                .GroupBy(item => item.ReleaseYear)
+                .ToDictionary(grouping => grouping.Key);
+
+
+
+        }
+    }
+
+    class Movie
+    {
+        public string Name { get; set; }
+        public int ReleaseYear { get; set; }
+    }
+
+    class CustomMovie
+    {
+        public string Name { get; set; }
+        public int ReleaseYear { get; set; }
+        public bool isOld { get; set; }
     }
 }

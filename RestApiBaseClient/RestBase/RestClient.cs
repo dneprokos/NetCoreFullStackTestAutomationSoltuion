@@ -10,8 +10,32 @@ using TestsBase.Client.Managers;
 
 namespace RestApiBase.Client.RestBase
 {
+    public class RequestSentArgs : EventArgs
+    {
+        public string Method { get; set; }
+    }
+
     public class RestClient
     {
+        #region Delegates and events
+
+        //Delegate
+        //Naming convention - Part before EventHandler()RestRequestSent - event name
+        public delegate void RestRequestSentEventHandler(object src, EventArgs eventArgs);
+
+        /// <summary>
+        /// Event based on on delegate
+        /// </summary>
+        public event RestRequestSentEventHandler RestRequestSent;
+
+        //Delegate
+        public delegate void RestRequestSentWithArgsEventHandler(object src, RequestSentArgs eventArgs);
+
+        //Events
+        public event RestRequestSentWithArgsEventHandler RestRequestSentWithArgs;
+
+        #endregion
+
         private readonly HttpClient _client;
         private readonly bool _isDebug;
         private Dictionary<string, string> _headers;
@@ -108,6 +132,8 @@ namespace RestApiBase.Client.RestBase
         {
             PrintRequestIfIsDebugMode("GET", requestUri);
             HttpResponseMessage responseMessage = await _client.GetAsync(requestUri);
+            OnRestRequestSent(); //Call Event raise method
+            OnRequestSentWithArgs("GET");
             return ConvertHttpResponseToRestResponseOfT<T>(responseMessage, ignoreBodyResponse).Result;
         }
 
@@ -122,6 +148,8 @@ namespace RestApiBase.Client.RestBase
         {
             PrintRequestIfIsDebugMode("DELETE", requestUri);
             HttpResponseMessage responseMessage = await _client.DeleteAsync(requestUri);
+            OnRestRequestSent(); //Call Event raise method
+            OnRequestSentWithArgs("DELETE");
             return ConvertHttpResponseToRestResponseOfT<T>(responseMessage, ignoreBodyResponse).Result;
         }
 
@@ -138,6 +166,8 @@ namespace RestApiBase.Client.RestBase
             var (content, json) = ConvertBodyToStringContent(requestBody);
             PrintRequestIfIsDebugMode("POST", requestUrl, json);
             HttpResponseMessage responseMessage = await _client.PostAsync(requestUrl, content);
+            OnRestRequestSent(); //Call Event raise method
+            OnRequestSentWithArgs("POST");
             return ConvertHttpResponseToRestResponseOfT(responseMessage, requestBody, ignoreBodyResponse).Result;
         }
 
@@ -155,6 +185,8 @@ namespace RestApiBase.Client.RestBase
             var (content, json) = ConvertBodyToStringContent(requestBody);
             PrintRequestIfIsDebugMode("POST", requestUrl, json);
             HttpResponseMessage responseMessage = await _client.PostAsync(requestUrl, content);
+            OnRestRequestSent(); //Call Event raise method
+            OnRequestSentWithArgs("POST");
             return ConvertHttpResponseToRestResponseOfT<TM>(responseMessage, ignoreBodyResponse).Result;
         }
 
@@ -171,7 +203,8 @@ namespace RestApiBase.Client.RestBase
             var (content, json) = ConvertBodyToStringContent(requestBody);
             PrintRequestIfIsDebugMode("PUT", requestUrl, json);
             HttpResponseMessage responseMessage = await _client.PutAsync(requestUrl, content);
-
+            OnRestRequestSent(); //Call Event raise method
+            OnRequestSentWithArgs("PUT");
             return ConvertHttpResponseToRestResponseOfT(responseMessage, requestBody, ignoreBodyResponse).Result;
         }
 
@@ -188,7 +221,8 @@ namespace RestApiBase.Client.RestBase
             var (content, json) = ConvertBodyToStringContent(requestBody);
             PrintRequestIfIsDebugMode("PATCH", requestUrl, json);
             HttpResponseMessage responseMessage = await _client.PatchAsync(requestUrl, content);
-
+            OnRestRequestSent(); //Call Event raise method
+            OnRequestSentWithArgs("PATCH");
             return ConvertHttpResponseToRestResponseOfT(responseMessage, requestBody, ignoreBodyResponse).Result;
         }
 
@@ -197,6 +231,8 @@ namespace RestApiBase.Client.RestBase
             var (content, json) = ConvertBodyToStringContent(requestBody);
             PrintRequestIfIsDebugMode("PUT", requestUrl, json);
             HttpResponseMessage responseMessage = await _client.PutAsync(requestUrl, content);
+            OnRestRequestSent(); //Call Event raise method
+            OnRequestSentWithArgs("PUT");
             return ConvertHttpResponseToRestResponseOfT<TM>(responseMessage, ignoreBodyResponse).Result;
         }
 
@@ -306,6 +342,25 @@ namespace RestApiBase.Client.RestBase
 
             Console.WriteLine($"\t{methodType} /{requestUrl} \n\tBody: {body}\n");
         }
+
+        //Raises the event
+        //Convention - Should be protected - virtual - void
+        protected virtual void OnRestRequestSent()
+        {
+            if (RestRequestSent!= null) 
+            {
+                RestRequestSent(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnRequestSentWithArgs(string method)
+        {
+            if (RestRequestSentWithArgs != null) 
+            {
+                RestRequestSentWithArgs(this, new RequestSentArgs { Method = method });
+            }
+        }
+
 
         #endregion
     }

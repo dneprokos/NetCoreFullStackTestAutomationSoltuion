@@ -35,6 +35,10 @@ namespace JsonPlaceholder.Api.Tests.ApiTests.Posts
                 body.ForEach(record => record.UserId.Should().Be(userId));
                 body.Should().HaveCount(expectedResultsCount);
             }
+
+            var sql = "select top(1) from Orders";
+
+
         }
     }
 }
