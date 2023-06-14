@@ -9,6 +9,7 @@
     <PackageReference Include="Bogus" Version="34.0.2" />
     <PackageReference Include="FluentAssertions" Version="6.8.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.6.0" />
   </ItemGroup>
 
 </Project>

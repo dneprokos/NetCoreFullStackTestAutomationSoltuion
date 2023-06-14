@@ -1,5 +1,4 @@
-﻿using NUnit.Allure.Core;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SeleniumBase.Client.Facades;
 using SeleniumBase.Client.Utils;
 using SeleniumBase.Client.WebDriverBase;
@@ -7,7 +6,6 @@ using TestsBase.Client.Managers;
 
 namespace SkyscraperCenter.Ui.Tests.e2e._TestsBase
 {
-    [AllureNUnit]
     public abstract class UiTestsBase
     {
         [SetUp]

@@ -1,9 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 using NUnit.Allure.Attributes;
 using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 using SkyscraperCenter.Ui.Client.Constants;
 using SkyscraperCenter.Ui.Client.Enums;
 using SkyscraperCenter.Ui.Client.Facades;
@@ -48,16 +57,16 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
         public void TallestBuildingsTable_TallestCompleted_BuildingShouldHaveExpectedNumberOfTheFloors(string buildingName, int expectedFloors)
         {
             //Arrange
+
+            //Act
             List<BuildingsTableComponentModel> table = SkyscraperCenterBase
                 .Pages
                 .BuildingsPage
                 .BuildingsTable
                 .GetTableWithStaticColumns();
 
-            //Act
-            BuildingsTableComponentModel searchBuilding = table.FirstOrDefault(r => r.NAME == buildingName);
-
             //Assert
+            BuildingsTableComponentModel searchBuilding = table.FirstOrDefault(r => r.NAME == buildingName);
             searchBuilding.Should().NotBeNull($"Building with name {buildingName} was not found in the table");
             searchBuilding!.FLOORS.Should().Be(expectedFloors);
         }
@@ -108,3 +117,6 @@ namespace SkyscraperCenter.Ui.Tests.e2e.TallestBuildings
         }
     }
 }
+
+
+
